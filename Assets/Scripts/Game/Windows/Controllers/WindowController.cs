@@ -49,11 +49,13 @@ namespace Game.Windows.Controllers
             _serverVoteController.OnErrorE += OnError;
         }
 
-        private void OnVote(string ipn, string option)
+        private void OnVote(string ipn, string option, string type)
         {
             if (ipn.Length > 0)
             {
-                _strategy = _clientStrategies.GetStrategy(EStrategy.USERS);
+                var typeId = type.Split("_")[2];
+                var strategyType = (EStrategy)int.Parse(typeId);
+                _strategy = _clientStrategies.GetStrategy(strategyType);
             
                 _strategy.OnError += OnError;
                 _clientVoteController.SetStrategy(_strategy);

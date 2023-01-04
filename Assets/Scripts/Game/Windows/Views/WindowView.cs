@@ -11,7 +11,7 @@ namespace Game.Windows.Views
 {
     public class WindowView:MonoBehaviour
     {
-        public event Action<string, string> OnVote;
+        public event Action<string, string, string> OnVote;
         
         [SerializeField] private List<CardView> _cardViews;
         [SerializeField] private Transform _cardContent;
@@ -22,8 +22,7 @@ namespace Game.Windows.Views
         [SerializeField] private TMP_Dropdown _selectLab;
         [SerializeField] private RectTransform _errorLabel;
         [SerializeField] private TMP_Text _errorText;
-        [SerializeField] private RectTransform _rectTransform;
-        
+
         public Transform CardContent => _cardContent;
         
         public void UpdateCards(IEnumerable<ElectionResultsData> votingResults)
@@ -71,7 +70,8 @@ namespace Game.Windows.Views
         
         private void OnEnable()
         {
-            _voteButton.onClick.AddListener(() => OnVote?.Invoke(_IPN.text, _selectOption.captionText.text));
+            _voteButton.onClick.AddListener(() => 
+                OnVote?.Invoke(_IPN.text, _selectOption.captionText.text, _selectLab.captionText.text));
         }
 
         private void OnDisable()
