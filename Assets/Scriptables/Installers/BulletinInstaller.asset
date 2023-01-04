@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77f14c237ef14aae9f747d7cda8efa75, type: 3}
+  m_Name: BulletinInstaller
+  m_EditorClassIdentifier: 
+  _bulletinDatabase: {fileID: 11400000, guid: 3b28998ac46b32d4da3071d7b7937b90, type: 2}

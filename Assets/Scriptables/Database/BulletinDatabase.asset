@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977f82e1ab1046d2b1d343f0a9a8d08c, type: 3}
+  m_Name: BulletinDatabase
+  m_EditorClassIdentifier: 
+  _bulletins:
+  - Id: 33333337
+    Sign: 4686e922cc305531fe45c040d9fff9556f91f8a8af2bfe19c999a58f5e8468a4afdc79ca4c340c48c72d841036065a55dca8948a3a2ea32f6c132f22f928a20c4cfcf4f4578c4ef63f7b276997f4a96eb0b0749997027f3e9c1c95f0455a77f54ef1608f5d5fcaa20ee9cea66371c696a763a8779b51cbe4bbe5d9637868e978
+    Message: 8344684db2419eca4340a5bbec760a51bc51c72da075bde898d4d8b5cfee4b70901f61e57a25e22be7cba6f3d8b5a669bdc78c316ae8785b9a7a361dd38418d1da78b7732b256566048fb904c4e9b17c9e6de9a071d3d31b691baf9842f96e95f44ccba0097d216b4e15411eb7728d6c17dad71f8dfcb64787847dbadc194112
