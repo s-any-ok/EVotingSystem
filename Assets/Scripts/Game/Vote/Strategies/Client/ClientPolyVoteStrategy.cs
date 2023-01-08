@@ -14,7 +14,7 @@ namespace Game.Vote.Strategies.Client
     public class ClientPolyVoteStrategy: BaseClientStrategy
     {
         public override event Action<string> OnError;
-        private const int MAX_INT = 2147483;
+        private const int MAX_INT = 100000;
         private readonly IDataProviderController _dataProviderController;
         private readonly IServerVoteController _serverVoteController;
         private readonly IAuthController _authController;

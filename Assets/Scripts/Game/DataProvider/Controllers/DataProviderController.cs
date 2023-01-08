@@ -16,6 +16,7 @@ namespace Game.DataProvider.Controllers
 {
     public class DataProviderController:IDataProviderController, IInitializable
     {
+        private const int DELTA = 10000;
         private readonly IUserDatabase _userDatabase;
         private readonly ICandidateDatabase _candidateDatabase;
         private readonly IBulletinDatabase _bulletinDatabase;
@@ -45,15 +46,8 @@ namespace Game.DataProvider.Controllers
         public User? GetUserById(int id) => _userDatabase.Users.FirstOrDefault(u => u.Id == id);
         public void SaveElectionResult(ElectionResult.Data.ElectionResult el) => _electionResultDatabase.ElectionResults.Add(el);
 
-        public int CreateBulletinId(int userId, int candidateId)
-        {
-            return userId * _candidateDatabase.Candidates.Count + candidateId;
-        }
-
-        public (int UserId, int CandidateId) GetBulletinId(int id)
-        {
-            return (id / _candidateDatabase.Candidates.Count, id % _candidateDatabase.Candidates.Count);
-        }
+        public int CreateBulletinId(int userId, int candidateId) => userId * DELTA + candidateId;
+        public (int UserId, int CandidateId) GetBulletinId(int id) => (id / DELTA, id % DELTA);
 
         public IEnumerable<ElectionResultsData> GetElectionResults()
         {
@@ -81,55 +75,19 @@ namespace Game.DataProvider.Controllers
             _candidateDatabase.Candidates.AddRange(new[]
             {
                 new Candidate() {Id = 1, Name = "Abaddon"},
-                new Candidate() {Id = 6, Name = "Alchemist"},
-                new Candidate() {Id = 9, Name = "Invoker"},
+                new Candidate() {Id = 2, Name = "Alchemist"},
+                new Candidate() {Id = 3, Name = "Invoker"},
             });
 
-            _userDatabase.Users.AddRange(new[]
+            for (int i = 1; i <= 10; i++)
             {
-                new User(1024 + 256 * 3, 2048 + 512 * 3)
+                var user = new User(1024 + 256 * (10 - i), 2048 + 512 * (10 - i))
                 {
-                    Id = 11111111,
-                    CanVote = true
-                },
-                new User(1024 + 256 * 2, 2048 + 512 * 2)
-                {
-                    Id = 11111112,
-                    CanVote = true
-                },
-                new User(1024 + 256, 2048 + 512)
-                {
-                    Id = 11111113,
-                    CanVote = true
-                },
-                new User(1024, 2048)
-                {
-                    Id = 11111116,
-                    CanVote = true
-                },
-                new User
-                {
-                    Id = 11111121,
-                    CanVote = true
-                },
-                new User
-                {
-                    Id = 11111124,
-                    CanVote = true
-                },
-                new User
-                {
-                    Id = 16,
-                    CanVote = false
-                },
-                new User
-                {
-                    Id = 17,
-                    CanVote = true
-                },
-            });
+                    Id = 1000 + i,
+                    CanVote = i < 5
+                };
+                _userDatabase.Users.Add(user);
+            }
         }
-
-
     }
 }

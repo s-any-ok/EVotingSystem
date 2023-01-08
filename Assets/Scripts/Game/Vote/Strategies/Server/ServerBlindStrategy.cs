@@ -72,18 +72,13 @@ namespace Game.Vote.Strategies.Server
         {
             var bulletinId = _serverVoteController.ApplyPrivateKey(msg);
             var bulletin = _dataProviderController.GetBulletinId(BitConverter.ToInt32(bulletinId));
-
-            ValidateUserAlreadyVoted(bulletin.UserId);
-        
-            _dataProviderController.SaveElectionResult(new ElectionResult.Data.ElectionResult(bulletin.UserId, bulletin.CandidateId));
-        }
-    
-        private void ValidateUserAlreadyVoted(int userId)
-        {
-            if (_dataProviderController.ElectionResults.Exists(vr => vr.UserId == userId))
+            
+            if (_dataProviderController.ElectionResults.Exists(vr => vr.UserId == bulletin.UserId))
             {
                 OnError?.Invoke("User already voted");
             }
+        
+            _dataProviderController.SaveElectionResult(new ElectionResult.Data.ElectionResult(bulletin.UserId, bulletin.CandidateId));
         }
     }
 }

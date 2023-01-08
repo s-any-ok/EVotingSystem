@@ -37,13 +37,13 @@ namespace Game.Vote.Strategies.Client
         
             var id = BitConverter.ToInt32(_xorCipherController.Encrypt(BitConverter.GetBytes(user.Id)));
 
-            var bundle = new PackagesData()
+            var packagesData = new PackagesData()
             {
                 Packages = packages,
                 Id = id
             };
 
-            var signed = (BlindPackageData)_serverVoteController.Sign(bundle);
+            var signed = (BlindPackageData)_serverVoteController.Sign(packagesData);
 
             if (signed.Messages!.Count != signed.SignedBulletins!.Count)
             {

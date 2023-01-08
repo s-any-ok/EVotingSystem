@@ -49,8 +49,7 @@ namespace Game.Windows.Views
             mySequence
                 .Append(_errorLabel.DOAnchorPosX(-400, 1F))
                 .AppendInterval(3)
-                .Append(_errorLabel.DOAnchorPosX(400, 1F))
-                .Kill();
+                .Append(_errorLabel.DOAnchorPosX(400, 1F));
         }
 
         public void AddCard(CardView cardView)

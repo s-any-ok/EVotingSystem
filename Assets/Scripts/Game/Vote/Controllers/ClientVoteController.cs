@@ -39,6 +39,7 @@ namespace Game.Vote.Controllers
                     return _serverVoteController.GetSeparatedResults().Select(r => new ElectionResultsData()
                     {
                         Votes = r.Value,
+                        CandidateId = _dataProviderController.Candidates.FirstOrDefault(c => c.Id == r.Key).Id,
                         CandidateName = _dataProviderController.Candidates.FirstOrDefault(c => c.Id == r.Key)?.Name
                     });
                 // lab 4
@@ -46,6 +47,7 @@ namespace Game.Vote.Controllers
                     return _strategy.GetResults().Select(r => new ElectionResultsData()
                     {
                         Votes = r.Value,
+                        CandidateId = _dataProviderController.Candidates.FirstOrDefault(c => c.Id == r.Key).Id,
                         CandidateName = _dataProviderController.Candidates.FirstOrDefault(c => c.Id == r.Key)?.Name
                     });
             }

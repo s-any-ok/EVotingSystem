@@ -40,7 +40,10 @@ namespace Game.Vote.Strategies.Server
                 OnError?.Invoke("Bulletin id data missmatch");
             }
         
-            CheckUserAlreadyVoted(bulletin.UserId);
+            if (_dataProviderController.ElectionResults.Exists(vr => vr.UserId == bulletin.UserId))
+            {
+                OnError?.Invoke("User already voted");
+            }
 
             if (!user.CheckIfSigned(b.Sign, _xorCipherController.Encrypt(decrypted)))
             {
@@ -51,14 +54,6 @@ namespace Game.Vote.Strategies.Server
         
             _dataProviderController.SaveBulletin(b);
             _dataProviderController.SaveElectionResult(new ElectionResult.Data.ElectionResult(bulletin.UserId, bulletin.CandidateId));
-        }
-
-        private void CheckUserAlreadyVoted(int userId)
-        {
-            if (_dataProviderController.ElectionResults.Exists(vr => vr.UserId == userId))
-            {
-                OnError?.Invoke("User already voted");
-            }
         }
     }
 }

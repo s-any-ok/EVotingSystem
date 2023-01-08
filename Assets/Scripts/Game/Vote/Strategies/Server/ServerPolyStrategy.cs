@@ -33,6 +33,11 @@ namespace Game.Vote.Strategies.Server
             {
                 OnError?.Invoke("User already voted");
             }
+            
+            if (_dataProviderController.ElectionResults.Exists(vr => vr.UserId == b.Id))
+            {
+                OnError?.Invoke("User already voted");
+            }
         
             if (!_regNumbers.Contains(regNumber))
             {
@@ -54,18 +59,8 @@ namespace Game.Vote.Strategies.Server
         
             _votedUsers.Add(b.Id);
             _regNumbers.Remove(regNumber);
-        
-            ValidateUserAlreadyVoted(b.Id);
-
+            
             _dataProviderController.SaveElectionResult(new ElectionResult.Data.ElectionResult(b.Id, bulletin.CandidateId));
-        }
-    
-        private void ValidateUserAlreadyVoted(int userId)
-        {
-            if (_dataProviderController.ElectionResults.Exists(vr => vr.UserId == userId))
-            {
-                OnError?.Invoke("User already voted");
-            }
         }
     }
 }
