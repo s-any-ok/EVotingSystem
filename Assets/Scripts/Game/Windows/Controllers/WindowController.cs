@@ -68,7 +68,7 @@ namespace Game.Windows.Controllers
                 var strings = type.Split("_");
                 var len = strings.Length;
                 var typeId = strings[len - 1];
-                var strategyType = EStrategy.SIMPLE;
+                var strategyType = (EStrategy)int.Parse(typeId);
                 _strategy = _clientStrategies.GetStrategy(strategyType);
             
                 _strategy.OnError += OnError;
