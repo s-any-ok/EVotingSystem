@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Game.Auth.Interfaces;
+using Game.BlumBlumShub.Interfaces;
 using Game.DataProvider.Interfaces;
+using Game.Encryptor.Interfaces;
 using Game.Primes.Interfaces;
+using Game.Token.Interfaces;
 using Game.Users.Data;
 using Game.Vote.Classes;
 using Game.Vote.Enum;
@@ -19,12 +22,16 @@ namespace Game.Vote.Strategies.Client
         private readonly IServerVoteController _serverVoteController;
         private readonly IXORCipherController _xorCipherController;
         private readonly IPrimesController _primesController;
-        
+        private readonly ITokenController _tokenController;
+        private readonly IBlumBlumShubController _blumBlumShubController;
+        private readonly IEncryptorController _encryptorController;
+
         public ClientStrategies(
             IDataProviderController dataProviderController,
             IAuthController authController,
             IServerVoteController serverVoteController,
-            IXORCipherController xorCipherController, IPrimesController primesController
+            IXORCipherController xorCipherController, IPrimesController primesController,
+            ITokenController tokenController, IBlumBlumShubController blumBlumShubController, IEncryptorController encryptorController
         )
         {
             _dataProviderController = dataProviderController;
@@ -32,6 +39,9 @@ namespace Game.Vote.Strategies.Client
             _serverVoteController = serverVoteController;
             _xorCipherController = xorCipherController;
             _primesController = primesController;
+            _tokenController = tokenController;
+            _blumBlumShubController = blumBlumShubController;
+            _encryptorController = encryptorController;
 
             _authController.OnError += OnError;
         }
@@ -50,6 +60,9 @@ namespace Game.Vote.Strategies.Client
                 case EStrategy.BLIND:
                     return new ClientBlindVoteStrategy(_dataProviderController, _serverVoteController,
                         _xorCipherController, _primesController);
+                case EStrategy.WITHOUT_CONFIRM:
+                    return new ClientWithoutConfirmationVoteStrategy(_dataProviderController, _serverVoteController,_tokenController,
+                        _blumBlumShubController, _encryptorController);
                 case EStrategy.USERS:
                 {
                     List<User> voters = _dataProviderController.GetVoters(4);

@@ -44,17 +44,31 @@ namespace Game.Windows.Controllers
             InitializeStrategies();
 
             _view.OnVote += OnVote;
+            _view.OnRegister += OnRegister;
+            _view.OnLogin += OnLogin;
             _clientVoteController.OnError += OnError;
             _clientStrategies.OnErrorE += OnError;
             _serverVoteController.OnErrorE += OnError;
+        }
+
+        private void OnLogin(string login, string password)
+        {
+            _clientVoteController.LogIn(login, password);
+        }
+
+        private void OnRegister(string ipn)
+        {
+            _clientVoteController.Register(Int32.Parse(ipn));
         }
 
         private void OnVote(string ipn, string option, string type)
         {
             if (ipn.Length > 0)
             {
-                var typeId = type.Split("_")[2];
-                var strategyType = (EStrategy)int.Parse(typeId);
+                var strings = type.Split("_");
+                var len = strings.Length;
+                var typeId = strings[len - 1];
+                var strategyType = EStrategy.SIMPLE;
                 _strategy = _clientStrategies.GetStrategy(strategyType);
             
                 _strategy.OnError += OnError;
@@ -121,6 +135,8 @@ namespace Game.Windows.Controllers
         public void Dispose()
         {
             _view.OnVote -= OnVote;
+            _view.OnRegister -= OnRegister;
+            _view.OnLogin -= OnLogin;
             _strategy.OnError -= OnError;
             _clientVoteController.OnError -= OnError;
             _clientStrategies.OnErrorE -= OnError;

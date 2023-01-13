@@ -7,6 +7,6 @@ namespace Game.Vote.Enum
         POLY = 3,
         USERS = 4,
         SEPARATE = 5,
-
+        WITHOUT_CONFIRM = 6,
     }
 }

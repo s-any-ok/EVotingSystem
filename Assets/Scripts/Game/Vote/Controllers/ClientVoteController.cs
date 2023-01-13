@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.BlumBlumShub.Interfaces;
 using Game.DataProvider.Interfaces;
+using Game.Registration.Interfaces;
 using Game.Users.Data;
 using Game.Vote.Data;
 using Game.Vote.Enum;
@@ -14,20 +16,32 @@ namespace Game.Vote.Controllers
         public event Action<string> OnError;
         private readonly IDataProviderController _dataProviderController;
         private readonly IServerVoteController _serverVoteController;
+        private readonly IRegistrationController _registrationController;
 
         private IClientStrategy _strategy;
 
         private List<User> _voters;
 
-        public ClientVoteController(IDataProviderController dataProviderController, IServerVoteController serverVoteController)
+        public ClientVoteController(IDataProviderController dataProviderController, IServerVoteController serverVoteController, IRegistrationController registrationController)
         {
             _dataProviderController = dataProviderController;
             _serverVoteController = serverVoteController;
+            _registrationController = registrationController;
         }
 
         public void SetStrategy(IClientStrategy clientStrategy)
         {
             _strategy = clientStrategy;
+        }
+        
+        public User Register(int ipn)
+        {
+            return _registrationController.RegisterVoter(ipn);
+        }
+
+        public string LogIn(string login, string password)
+        {
+            return _registrationController.LoginVoter(login, password);
         }
 
         public IEnumerable<ElectionResultsData> GetElectionResults()

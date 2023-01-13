@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using Game.Auth.Interfaces;
+using Game.BlumBlumShub.Interfaces;
 using Game.Bulletins.Data;
 using Game.DataProvider.Interfaces;
+using Game.Encryptor.Interfaces;
+using Game.Primes.Interfaces;
+using Game.Token.Interfaces;
 using Game.Vote.Data;
 using Game.Vote.Interfaces;
 using Game.Vote.Strategies.Server;
@@ -17,10 +22,18 @@ namespace Game.Vote.Controllers
         public event Action<string> OnErrorE;
         private RSA _rsa;
         public RSAParameters PublicKey => _rsa.ExportParameters(false);
+        
+        private Dictionary<int, (int p, int q)> _votersKeys = new();
+
+        private List<byte[]> bulletins = new();
 
         private readonly IDataProviderController _dataProviderController;
         private readonly IAuthController _authController;
         private readonly IXORCipherController _xorCipherController;
+        private readonly IPrimesController _primesController;
+        private readonly IEncryptorController _encryptorController;
+        private readonly IBlumBlumShubController _blumBlumShubController;
+        private readonly ITokenController _tokenController;
 
         private IServerStrategy _strategy;
         private List<ServerSeparatedStrategy> _separatedVotingStrategies;
@@ -28,11 +41,16 @@ namespace Game.Vote.Controllers
         public List<ServerSeparatedStrategy> SeparatedVotingStrategies => _separatedVotingStrategies;
 
         public ServerVoteController(IDataProviderController dataProviderController, IAuthController authController,
-            IXORCipherController xorCipherController)
+            IXORCipherController xorCipherController,IPrimesController primesController, IEncryptorController encryptorController,
+            IBlumBlumShubController blumBlumShubController, ITokenController tokenController)
         {
             _dataProviderController = dataProviderController;
             _authController = authController;
             _xorCipherController = xorCipherController;
+            _primesController = primesController;
+            _encryptorController = encryptorController;
+            _blumBlumShubController = blumBlumShubController;
+            _tokenController = tokenController;
 
             _rsa = RSA.Create();
 
@@ -149,6 +167,101 @@ namespace Game.Vote.Controllers
             }
 
             return res;
+        }
+
+        public void GenerateKeys(List<int> ids)
+        {
+            var primes = _primesController.GeneratePrimesNaive(ids.Count * 2, 3, 5);
+            var pos = 0;
+            
+            foreach (var id in ids)
+            {
+                if (_votersKeys.ContainsKey(id))
+                {
+                    throw new Exception("not unique id");
+                }
+                
+                _votersKeys.Add(id, (primes[pos++], primes[pos++]));
+            }
+        }
+
+        public List<string> GetTokens()
+        {
+            return _votersKeys.Select(pair => _tokenController.GenerateToken(pair.Key, pair.Value.p * pair.Value.q)).ToList();
+        }
+
+        public void Vote(byte[] msg)
+        {
+            bulletins.Add(msg);
+        }
+
+        public IDictionary<int, int> ComputeResults()
+        {
+            var ids = new HashSet<int>();
+            var res = new Dictionary<int, int>();
+
+            foreach (var msg in bulletins)
+            {
+                var (id, candidate) = GetVoteResult(msg);
+
+                if (ids.Contains(id)) continue; // voter already voted
+
+                if (res.ContainsKey(candidate))
+                {
+                    res[candidate]++;
+                }
+                else
+                {
+                    res.Add(candidate, 1);
+                }
+
+                ids.Add(id);
+            }
+
+            return res;
+        }
+
+        private (int id, int candidate) GetVoteResult(byte[] msg)
+        {
+            var decrypted = _encryptorController.Decrypt2(msg);
+            var decryptedWithoutId = decrypted;
+
+            var keys = (-1, -1);
+
+            foreach (var pair in _votersKeys)
+            {
+                var idBytes = BitConverter.GetBytes(pair.Key);
+
+                var last = decrypted.TakeLast(idBytes.Length);
+
+                if (last.SequenceEqual(idBytes))
+                {
+                    keys = pair.Value;
+
+                    decryptedWithoutId = decrypted.SkipLast(idBytes.Length).ToArray();
+                    
+                    break;
+                }
+            }
+
+            if (keys.Item1 == -1 || keys.Item2 == -1)
+            {
+                throw new Exception("voter not found");
+            }
+
+            var bit = BitConverter.GetBytes(_blumBlumShubController.GetBit(keys.Item1 * keys.Item2));
+
+            if (!decryptedWithoutId.TakeLast(bit.Length).SequenceEqual(bit))
+            {
+                throw new Exception("mismatch");
+            }
+
+            var bulletinEncrypted = decryptedWithoutId.SkipLast(bit.Length).ToArray();
+            var bulletinDecrypted = _encryptorController.Decrypt(bulletinEncrypted);
+
+            var bulletin = _dataProviderController.GetBulletinId(BitConverter.ToInt32(bulletinDecrypted));
+
+            return (bulletin.UserId, bulletin.CandidateId);
         }
 
         public void Dispose()

@@ -7,7 +7,11 @@ namespace Game.Users.Data
     public class User
     {
         public int Id;
-        public bool CanVote; 
+        public bool CanVote;
+        public bool IsLogedIn;
+        public string Token;
+        public string Login;
+        public string Password;
         private RSA _rsa;
         private RSA _secondRsa;
         

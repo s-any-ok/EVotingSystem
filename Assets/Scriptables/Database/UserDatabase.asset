@@ -12,4 +12,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1071945a7f2011d418714e3543f7a8bd, type: 3}
   m_Name: UserDatabase
   m_EditorClassIdentifier: 
-  _users: []
+  _users:
+  - Id: 1001
+    CanVote: 1
+    IsLogedIn: 1
+    Token: 0_15
+    Login: 235SV
+    Password: XLTDU
+  - Id: 1002
+    CanVote: 1
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1003
+    CanVote: 1
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1004
+    CanVote: 1
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1005
+    CanVote: 0
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1006
+    CanVote: 0
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1007
+    CanVote: 0
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1008
+    CanVote: 0
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1009
+    CanVote: 0
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 
+  - Id: 1010
+    CanVote: 0
+    IsLogedIn: 0
+    Token: 
+    Login: 
+    Password: 

@@ -23,5 +23,12 @@ namespace Game.Vote.Interfaces
         BigInteger Encrypt(BigInteger x);
         Dictionary<int, int> GetSeparatedResults();
         void Vote(byte[] msg, byte[] sign);
+        void GenerateKeys(List<int> ids);
+
+        List<string> GetTokens();
+
+        void Vote(byte[] msg);
+
+        IDictionary<int, int> ComputeResults();
     }
 }

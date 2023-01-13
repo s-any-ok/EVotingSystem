@@ -6,6 +6,7 @@ using Game.Bulletins.Interfaces;
 using Game.Candidates.Data;
 using Game.Candidates.Interfaces;
 using Game.DataProvider.Interfaces;
+using Game.Tokens.Interfaces;
 using Game.Users.Data;
 using Game.Users.Interfaces;
 using Game.Vote.Data;
@@ -21,19 +22,23 @@ namespace Game.DataProvider.Controllers
         private readonly ICandidateDatabase _candidateDatabase;
         private readonly IBulletinDatabase _bulletinDatabase;
         private readonly IElectionResultDatabase _electionResultDatabase;
-        
+        private readonly ITokenDatabase _tokenDatabase;
+
         public List<Candidate> Candidates => _candidateDatabase.Candidates;
         public List<User> Users => _userDatabase.Users;
         public List<ElectionResult.Data.ElectionResult> ElectionResults => _electionResultDatabase.ElectionResults;
+        public List<string> Tokens => _tokenDatabase.Tokens;
 
         protected DataProviderController(IUserDatabase userDatabase, ICandidateDatabase candidateDatabase, 
-            IBulletinDatabase bulletinDatabase, IElectionResultDatabase electionResultDatabase)
+            IBulletinDatabase bulletinDatabase, IElectionResultDatabase electionResultDatabase,
+            ITokenDatabase tokenDatabase)
         {
             _userDatabase = userDatabase;
             _candidateDatabase = candidateDatabase;
             _bulletinDatabase = bulletinDatabase;
             _electionResultDatabase = electionResultDatabase;
-            
+            _tokenDatabase = tokenDatabase;
+
             Seed();
         }
         
@@ -43,6 +48,11 @@ namespace Game.DataProvider.Controllers
         public Candidate? GetCandidateByName(string name) => _candidateDatabase.GetCandidateByName(name);
         public List<User> GetVoters(int limit = -1) => _userDatabase.GetVoters(limit);
         public void SaveBulletin(Bulletin b) => _bulletinDatabase.SaveBulletin(b);
+        public void UpdateUser(User user)
+        {
+            _userDatabase.UpdateUser(user);
+        }
+
         public User? GetUserById(int id) => _userDatabase.Users.FirstOrDefault(u => u.Id == id);
         public void SaveElectionResult(ElectionResult.Data.ElectionResult el) => _electionResultDatabase.ElectionResults.Add(el);
 
@@ -71,6 +81,7 @@ namespace Game.DataProvider.Controllers
             _bulletinDatabase.Bulletins.Clear();
             _candidateDatabase.Candidates.Clear();
             _electionResultDatabase.ElectionResults.Clear();
+            _tokenDatabase.Tokens.Clear();
             
             _candidateDatabase.Candidates.AddRange(new[]
             {

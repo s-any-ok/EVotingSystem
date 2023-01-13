@@ -10,6 +10,7 @@ namespace Game.DataProvider.Interfaces
     public interface IDataProviderController
     {
         List<Candidate> Candidates { get; }
+        List<string> Tokens { get; }
         List<User> Users { get; }
         List<ElectionResult.Data.ElectionResult> ElectionResults { get; }
         User? GetUserById(int id);
@@ -21,5 +22,6 @@ namespace Game.DataProvider.Interfaces
         (int UserId, int CandidateId) GetBulletinId(int id);
         void SaveElectionResult(ElectionResult.Data.ElectionResult vr);
         void SaveBulletin(Bulletin b);
+        void UpdateUser(User user);
     }
 }

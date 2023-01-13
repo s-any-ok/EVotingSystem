@@ -18,5 +18,14 @@ namespace Game.Users.Scriptable
         
         public User? GetUserById(int id) => _users.FirstOrDefault(u => u.Id == id);
         public List<User> GetVoters(int limit = -1) => _users.FindAll(u => u.CanVote).Take(limit).ToList();
+
+        public void UpdateUser(User user)
+        {
+            var oldUser = _users.FirstOrDefault(x => user.Id == x.Id);
+            oldUser.Login = user.Login;
+            oldUser.Password = user.Password;
+            oldUser.Token = user.Token;
+            oldUser.CanVote = user.CanVote;
+        }
     }
 }

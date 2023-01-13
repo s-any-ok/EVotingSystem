@@ -9,5 +9,6 @@ namespace Game.Users.Interfaces
         List<User> Users { get; } 
         User? GetUserById(int id);
         List<User> GetVoters(int limit = -1);
+        void UpdateUser(User user);
     }
 }
